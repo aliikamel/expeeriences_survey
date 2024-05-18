@@ -12,7 +12,7 @@ root.render(
     <Router>
       <Routes>
         <Route>
-          <Route exact path="/survey" element={< App />} />
+          <Route exact path="/" element={< App />} />
         </Route>
       </Routes>
     </Router>
