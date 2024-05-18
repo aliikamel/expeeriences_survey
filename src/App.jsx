@@ -21,6 +21,11 @@ function App() {
   const [q9Answer, setQ9Answer] = useState(null);
   const [q12Answer, setQ12Answer] = useState(null);
 
+  let survey_submitted = localStorage.getItem("completedSurvey") || false;
+
+  const [completedSurvey, setCompletedSurvey] = useState(survey_submitted);
+  const [completedSurveyError, setCompletedSurveyError] = useState(null);
+
   const countryOptions = Object.keys(universitiesData).map((key) => ({
     value: key,
     label: key,
@@ -110,15 +115,54 @@ function App() {
     })
       .then(() => {
         console.log("Data submitted successfully");
+        localStorage.setItem("completedSurvey", true);
+        setCompletedSurvey(true);
         // Handle further actions after successful submission, like showing a message
       })
       .catch((error) => {
         console.error("Failed to submit data:", error);
+        localStorage.setItem("completedSurvey", true);
+        setCompletedSurvey(true);
+        setCompletedSurveyError(true);
         // Handle errors here if the submission failed
       });
   };
 
-  return (
+  return completedSurvey ? (
+    completedSurveyError ? (
+      <div className="h-screen w-full bg-blue-100 p-36">
+        <div className="mx-auto w-1/2 bg-gray-800 rounded-xl">
+          <div className="p-24 bg-teal-900 rounded-xl">
+            <h1 className="text-3xl text-center font-bold leading-tight tracking-tight text-gray-200">
+              Thank you for your submission!
+            </h1>
+            <h3 className="text-red-300 text-center p-2">
+              However there was an error. Please click the below link as an
+              alternative for the survey, Thank you!
+            </h3>
+            <div className="flex items-center justify-center p-4">
+              <a
+                className="text-gray-300 mx-auto underline"
+                href="https://forms.office.com/Pages/ResponsePage.aspx?id=hfFpVS_SE06YUM5bGrzS6EEjjLJV9upEqE4Hxv7tbDNUQUo1VEIzQ0tUOTBCN0Q3SUxLVTNHN0I0NC4u"
+              >
+                Click Here
+              </a>
+            </div>
+          </div>
+        </div>
+      </div>
+    ) : (
+      <div className="h-screen w-full bg-blue-100 p-36">
+        <div className="mx-auto w-1/2 bg-gray-800 rounded-xl">
+          <div className="p-24 bg-teal-900 rounded-xl">
+            <h1 className="text-3xl text-center font-bold leading-tight tracking-tight text-gray-200">
+              Thank you for your submission!
+            </h1>
+          </div>
+        </div>
+      </div>
+    )
+  ) : (
     <div className="h-full w-full bg-blue-100 p-36">
       <div className="mx-auto w-1/2 bg-gray-800 rounded-xl">
         <div className="p-8 bg-teal-900 rounded-t-xl">
@@ -127,7 +171,7 @@ function App() {
           </h1>
         </div>
 
-        <form className="p-16" onSubmit={handleSubmit}>
+        <form className="p-16 flex flex-col" onSubmit={handleSubmit}>
           <div className="grid grid-cols-2 gap-12">
             <div className="mb-16">
               <label htmlFor="full_name" className={input_label}>
@@ -368,7 +412,7 @@ function App() {
 
           <button
             type="submit"
-            className="text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-lg text-sm w-full sm:w-auto px-5 py-2.5 text-center"
+            className="mx-auto text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-xl text-xl w-full sm:w-auto px-32 py-4 text-center"
           >
             Submit
           </button>
