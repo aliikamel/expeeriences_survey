@@ -9,14 +9,11 @@ import { BrowserRouter as Router, Route, Routes } from "react-router-dom";
 const root = ReactDOM.createRoot(document.getElementById('root'));
 root.render(
   <React.StrictMode>
-    <Router>
+    <Router basename="/expeeriences_survey"> {/* Set the basename here */}
       <Routes>
-        <Route>
-          <Route exact path="/" element={< App />} />
-        </Route>
+        <Route path="/" element={<App />} /> {/* Correct nesting of Route */}
       </Routes>
     </Router>
-
   </React.StrictMode>
 );
 
