@@ -26,15 +26,13 @@ function App() {
   const [completedSurvey, setCompletedSurvey] = useState(survey_submitted);
   const [completedSurveyError, setCompletedSurveyError] = useState(null);
 
-
-  const countryOptions = Object.keys(universitiesData).sort()
+  const countryOptions = Object.keys(universitiesData)
+    .sort()
     .map((key) => ({
       value: key,
       label: key,
     }))
     .sort();
-
-  console.log(countryOptions);
 
   let universities_list = selectedCountry
     ? universitiesData[selectedCountry.value].sort()
@@ -123,7 +121,7 @@ function App() {
       body: new URLSearchParams(formattedSurveyData),
     })
       .then(() => {
-        console.log("Data submitted successfully");
+        console.log("form submitted");
         localStorage.setItem("completedSurvey", true);
         setCompletedSurvey(true);
         // Handle further actions after successful submission, like showing a message
@@ -216,7 +214,11 @@ function App() {
             <div className="mb-4 xl:mb-16 col-span-2">
               <label htmlFor="country" className={input_label}>
                 <span className={number_class}>3.</span> Which country are you
-                located in <span className="text-red-500">*</span>
+                located in?{" "}
+                <span className="text-gray-300">
+                  {"(where your university is)"}{" "}
+                </span>
+                <span className="text-red-500">*</span>
               </label>
               <Select
                 name="country"
@@ -237,8 +239,8 @@ function App() {
           <div className="grid grid-cols-2 xl:gap-12">
             <div className="mb-4 xl:mb-16 col-span-2 xl:col-span-1">
               <label htmlFor="university" className={input_label}>
-                <span className={number_class}>4.</span> What is your
-                university? <span className="text-red-500">*</span>
+                <span className={number_class}>4.</span> Which university do you
+                study at? <span className="text-red-500">*</span>
               </label>
               <Select
                 type="text"
@@ -255,7 +257,7 @@ function App() {
             </div>
             <div className="mb-4 xl:mb-16 col-span-2 xl:col-span-1">
               <label htmlFor="q5" className={input_label}>
-                <span className={number_class}>5.</span>What is your course?{" "}
+                <span className={number_class}>5.</span>What is your program?{" "}
                 <span className="text-red-500">*</span>
               </label>
               <input
@@ -272,7 +274,7 @@ function App() {
             <div className="mb-4 xl:mb-16 col-span-2">
               <label htmlFor="q6" className={input_label}>
                 <span className={number_class}>6.</span>What industry do you
-                want to work in post graduation?{" "}
+                want to work in post-graduation?{" "}
                 <span className="text-red-500">*</span>
               </label>
               <input
@@ -289,8 +291,11 @@ function App() {
             <div className="mb-4 xl:mb-16 col-span-2">
               <label htmlFor="q7" className={input_label}>
                 <span className={number_class}>7.</span>Do you face issues with
-                getting internships? (Not enough space for interns, Under
-                qualified). <span className="text-red-500">*</span>
+                getting internships?{" "}
+                <span className="text-gray-300">
+                  (Not enough space for interns, Under qualified).
+                </span>
+                <span className="text-red-500">*</span>
               </label>
               <Select
                 type="text"
@@ -308,8 +313,12 @@ function App() {
             <div className="mb-4 xl:mb-16 col-span-2">
               <label htmlFor="q8" className={input_label}>
                 <span className={number_class}>8.</span>Do you agree with this
-                statement? "Students are being rejected to internships due to a
-                lack of experience"<span className="text-red-500">*</span>
+                statement?{" "}
+                <span className="text-gray-300 italic">
+                  "Students are being rejected to internships due to a lack of
+                  experience"
+                </span>{" "}
+                <span className="text-red-500">*</span>
               </label>
               <Select
                 type="text"
@@ -330,8 +339,11 @@ function App() {
                 <span className={number_class}>9.</span>How likely are you to
                 utilize a free service that provides real world work simulations
                 partnered up with multinational institutions within your
-                preferred field? (completion certification will have a small
-                charge associated with it).
+                preferred field?{" "}
+                <span className="text-gray-300">
+                  (completion certification will have a small charge associated
+                  with it).
+                </span>
                 <span className="text-red-500">*</span>
               </label>
               <Select
@@ -363,9 +375,12 @@ function App() {
             <div className="mb-4 xl:mb-16 col-span-2">
               <label htmlFor="q11" className={input_label}>
                 <span className={number_class}>11.</span>How much would you pay
-                for the certifications to add to your resume? (note:
-                Certifications are acquired after the free simulation at a price
-                and are recognized by that partner company).{" "}
+                for the certifications to add to your resume?
+                <br />{" "}
+                <span className="text-gray-300">
+                  (note: Certifications are acquired after the free simulation
+                  at a price and are recognized by that partner company).
+                </span>{" "}
                 <span className="text-red-500">*</span>
               </label>
               <div className="relative w-full">
@@ -403,8 +418,11 @@ function App() {
             <div className="mb-4 xl:mb-16 col-span-2">
               <label htmlFor="q11" className={input_label}>
                 <span className={number_class}>12.</span>Would you like to get
-                waitlisted for a service like this? (You will be contacted via
-                your provided email)<span className="text-red-500">*</span>
+                waitlisted for a service like this?{" "}
+                <span className="text-gray-300">
+                  (You will be contacted via your provided email).
+                </span>{" "}
+                <span className="text-red-500">*</span>
               </label>
               <Select
                 type="text"
