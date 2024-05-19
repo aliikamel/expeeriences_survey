@@ -26,13 +26,22 @@ function App() {
   const [completedSurvey, setCompletedSurvey] = useState(survey_submitted);
   const [completedSurveyError, setCompletedSurveyError] = useState(null);
 
-  const countryOptions = Object.keys(universitiesData).map((key) => ({
-    value: key,
-    label: key,
-  }));
+
+  const countryOptions = Object.keys(universitiesData).sort()
+    .map((key) => ({
+      value: key,
+      label: key,
+    }))
+    .sort();
+
+  console.log(countryOptions);
+
+  let universities_list = selectedCountry
+    ? universitiesData[selectedCountry.value].sort()
+    : [];
 
   const universityOptions = selectedCountry
-    ? universitiesData[selectedCountry.value].map((university) => ({
+    ? universities_list.map((university) => ({
         value: university,
         label: university,
       }))
