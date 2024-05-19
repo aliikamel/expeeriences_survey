@@ -152,10 +152,10 @@ function App() {
         </div>
       </div>
     ) : (
-      <div className="h-screen w-full bg-blue-100 p-36">
-        <div className="mx-auto w-1/2 bg-gray-800 rounded-xl">
-          <div className="p-24 bg-teal-900 rounded-xl">
-            <h1 className="text-3xl text-center font-bold leading-tight tracking-tight text-gray-200">
+      <div className="h-screen w-full bg-blue-100 p-12 pt-24 xl:p-36">
+        <div className="mx-auto w-full xl:w-1/2 bg-gray-800 rounded-xl">
+          <div className="p-12 xl:p-24 bg-teal-900 rounded-xl">
+            <h1 className="text-2xl xl:text-3xl text-center font-bold leading-tight tracking-tight text-gray-200">
               Thank you for your submission!
             </h1>
           </div>
@@ -163,17 +163,17 @@ function App() {
       </div>
     )
   ) : (
-    <div className="h-full w-full bg-blue-100 p-36">
-      <div className="mx-auto w-1/2 bg-gray-800 rounded-xl">
+    <div className="h-full w-full bg-blue-100 xl:p-36 p-6 pt-12">
+      <div className="mx-auto xl:w-1/2 bg-gray-800 rounded-xl">
         <div className="p-8 bg-teal-900 rounded-t-xl">
           <h1 className="text-3xl font-bold leading-tight tracking-tight text-gray-200">
             Student Survey
           </h1>
         </div>
 
-        <form className="p-16 flex flex-col" onSubmit={handleSubmit}>
-          <div className="grid grid-cols-2 gap-12">
-            <div className="mb-16">
+        <form className="p-4 xl:p-16 flex flex-col" onSubmit={handleSubmit}>
+          <div className="grid grid-cols-2 xl:gap-12">
+            <div className="mb-4 xl:mb-16 col-span-2 xl:col-span-1">
               <label htmlFor="full_name" className={input_label}>
                 <span className={number_class}>1.</span> Full Name{" "}
                 <span className="text-red-500">*</span>
@@ -186,7 +186,7 @@ function App() {
                 required
               />
             </div>
-            <div className="mb-16">
+            <div className="mb-4 xl:mb-16 col-span-2 xl:col-span-1">
               <label htmlFor="email" className={input_label}>
                 <span className={number_class}>2.</span> Your email{" "}
                 <span className="text-red-500">*</span>
@@ -203,8 +203,8 @@ function App() {
           </div>
           {/* SELECTING COUNTRY AND UNIVERSITIES */}
 
-          <div className="grid grid-cols-2 gap-24">
-            <div className="mb-16 col-span-2">
+          <div className="grid grid-cols-2 xl:gap-24">
+            <div className="mb-4 xl:mb-16 col-span-2">
               <label htmlFor="country" className={input_label}>
                 <span className={number_class}>3.</span> Which country are you
                 located in <span className="text-red-500">*</span>
@@ -225,8 +225,8 @@ function App() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-12">
-            <div className="mb-16">
+          <div className="grid grid-cols-2 xl:gap-12">
+            <div className="mb-4 xl:mb-16 col-span-2 xl:col-span-1">
               <label htmlFor="university" className={input_label}>
                 <span className={number_class}>4.</span> What is your
                 university? <span className="text-red-500">*</span>
@@ -244,7 +244,7 @@ function App() {
                 required
               />
             </div>
-            <div className="mb-16">
+            <div className="mb-4 xl:mb-16 col-span-2 xl:col-span-1">
               <label htmlFor="q5" className={input_label}>
                 <span className={number_class}>5.</span>What is your course?{" "}
                 <span className="text-red-500">*</span>
@@ -260,7 +260,7 @@ function App() {
           </div>
 
           <div className="grid grid-cols-2 gap-12">
-            <div className="mb-16 col-span-2">
+            <div className="mb-4 xl:mb-16 col-span-2">
               <label htmlFor="q6" className={input_label}>
                 <span className={number_class}>6.</span>What industry do you
                 want to work in post graduation?{" "}
@@ -277,7 +277,7 @@ function App() {
           </div>
 
           <div className="grid grid-cols-2 gap-12">
-            <div className="mb-16 col-span-2">
+            <div className="mb-4 xl:mb-16 col-span-2">
               <label htmlFor="q7" className={input_label}>
                 <span className={number_class}>7.</span>Do you face issues with
                 getting internships? (Not enough space for interns, Under
@@ -296,7 +296,7 @@ function App() {
             </div>
           </div>
           <div className="grid grid-cols-2 gap-12">
-            <div className="mb-16 col-span-2">
+            <div className="mb-4 xl:mb-16 col-span-2">
               <label htmlFor="q8" className={input_label}>
                 <span className={number_class}>8.</span>Do you agree with this
                 statement? "Students are being rejected to internships due to a
@@ -316,7 +316,7 @@ function App() {
           </div>
 
           <div className="grid grid-cols-2 gap-12">
-            <div className="mb-16 col-span-2">
+            <div className="mb-4 xl:mb-16 col-span-2">
               <label htmlFor="q9" className={input_label}>
                 <span className={number_class}>9.</span>How likely are you to
                 utilize a free service that provides real world work simulations
@@ -339,7 +339,7 @@ function App() {
           </div>
 
           <div className="grid grid-cols-2 gap-12">
-            <div className="mb-16 col-span-2">
+            <div className="mb-4 xl:mb-16 col-span-2">
               <label htmlFor="q10" className={input_label}>
                 <span className={number_class}>10.</span>What additional
                 features would you find valuable in this service that can help
@@ -351,7 +351,7 @@ function App() {
           </div>
 
           <div className="grid grid-cols-2 gap-12">
-            <div className="mb-16 col-span-2">
+            <div className="mb-4 xl:mb-16 col-span-2">
               <label htmlFor="q11" className={input_label}>
                 <span className={number_class}>11.</span>How much would you pay
                 for the certifications to add to your resume? (note:
@@ -391,7 +391,7 @@ function App() {
           </div>
 
           <div className="grid grid-cols-2 gap-12">
-            <div className="mb-16 col-span-2">
+            <div className="mb-4 xl:mb-16 col-span-2">
               <label htmlFor="q11" className={input_label}>
                 <span className={number_class}>12.</span>Would you like to get
                 waitlisted for a service like this? (You will be contacted via
@@ -412,7 +412,7 @@ function App() {
 
           <button
             type="submit"
-            className="mx-auto text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-xl text-xl w-full sm:w-auto px-32 py-4 text-center"
+            className="mx-auto text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-xl text-xl w-full py-2 xl:px-32 xl:py-4 text-center"
           >
             Submit
           </button>
