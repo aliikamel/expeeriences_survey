@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import universitiesData from "./universities_by_country.json";
+import universitySubjects from "./course_names.json";
 import Select from "react-select";
 import AutoResizeTextarea from "./AutoResizeText";
 
 function App() {
   const results_url =
-    "https://script.google.com/macros/s/AKfycbyDzgbZvK_LHnUNWfJIjs2E1g747ZhAAsu6pwRvCMKSWB2rJC0BN8LyLYAIoIuNETxjiQ/exec";
+    "https://script.google.com/macros/s/AKfycbxiLDeg5N3nSsyyLPaqWoLZQW7jdFGaA1Pmj774713mgydxOQaesB7AfO0FFGBE68zd5g/exec";
 
   // CSS CLASS NAMES
   const number_class = "text-base text-gray-500 mr-2 font-bold";
@@ -13,13 +14,16 @@ function App() {
   const input_class =
     "bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-lg focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5";
 
+  const [selectedEducation, setSelectedEducation] = useState(null);
   const [selectedCountry, setSelectedCountry] = useState(null);
   const [selectedUniversity, setSelectedUniversity] = useState(null);
+  const [selectedProgram, setSelectedProgram] = useState(null);
+  const [loading, setLoading] = useState(false);
   // State to store the selected answer for the internship issue
-  const [q7Answer, setQ7Answer] = useState(null);
   const [q8Answer, setQ8Answer] = useState(null);
   const [q9Answer, setQ9Answer] = useState(null);
-  const [q12Answer, setQ12Answer] = useState(null);
+  const [q10Answer, setQ10Answer] = useState(null);
+  const [q13Answer, setQ13Answer] = useState(null);
 
   let survey_submitted = localStorage.getItem("completedSurvey") || false;
 
@@ -45,12 +49,32 @@ function App() {
       }))
     : [];
 
+  universitySubjects.sort();
+  let universityCourseOptions = universitySubjects.map((course) => ({
+    value: course,
+    label: course,
+  }));
+
+  universityCourseOptions.push({ value: "Other", label: "Other" });
+
+  let schoolCurriculumOptions = [
+    { value: "British", label: "British National Curriculum" },
+    { value: "IB", label: "International Baccalaureate (IB)" },
+    { value: "U.S", label: "U.S. Curriculum" },
+    { value: "Other", label: "Other" },
+  ];
+
   const yes_or_no = [
     { value: "Yes", label: "Yes" },
     { value: "No", label: "No" },
   ];
 
-  const q9Options = [
+  const education = [
+    { value: "University", label: "Higher Level Education/University" },
+    { value: "School", label: "School" },
+  ];
+
+  const q10Options = [
     { value: "Very likely", label: "Very likely" },
     { value: "Somewhat likely", label: "Somewhat likely" },
     {
@@ -66,15 +90,21 @@ function App() {
     setSelectedUniversity(null); // Reset university selection when country changes
   };
 
+  const handleEducationChange = (selectedOption) => {
+    setSelectedEducation(selectedOption);
+    setSelectedUniversity(null);
+    setSelectedProgram(null);
+  };
+
   const handleUniversityChange = (selectedOption) => {
     setSelectedUniversity(selectedOption);
   };
 
-  // Handle change for the yes/no question
-  const handleQ7Change = (selectedOption) => {
-    setQ7Answer(selectedOption);
+  const handleProgramChange = (selectedOption) => {
+    setSelectedProgram(selectedOption);
   };
 
+  // Handle change for the yes/no question
   const handleQ8Change = (selectedOption) => {
     setQ8Answer(selectedOption);
   };
@@ -83,30 +113,39 @@ function App() {
     setQ9Answer(selectedOption);
   };
 
-  const handleQ12Change = (selectedOption) => {
-    setQ12Answer(selectedOption);
+  const handleQ10Change = (selectedOption) => {
+    setQ10Answer(selectedOption);
+  };
+
+  const handleQ13Change = (selectedOption) => {
+    setQ13Answer(selectedOption);
   };
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     let data = e.target;
+    setLoading(true);
 
     let country = selectedCountry.value;
-    let university = selectedUniversity.value;
+    let education = selectedEducation.value;
+
+    let educational_institute =
+      education === "University" ? selectedUniversity.value : data.q5.value;
 
     let formattedSurveyData = {
       name: data.full_name.value,
       email: data.email.value,
       country: country,
-      university: university,
-      course: data.q5.value,
-      industry: data.q6.value,
-      Question_7: q7Answer.value,
+      education: education,
+      educational_institute: educational_institute,
+      program: selectedProgram.value,
+      industry: data.q7.value,
       Question_8: q8Answer.value,
       Question_9: q9Answer.value,
-      Question_10: data.q10.value,
+      Question_10: q10Answer.value,
       Question_11: data.q11.value,
-      Question_12: q12Answer.value,
+      Question_12: data.q12.value,
+      Question_13: q13Answer.value,
     };
 
     console.log(formattedSurveyData);
@@ -215,9 +254,7 @@ function App() {
               <label htmlFor="country" className={input_label}>
                 <span className={number_class}>3.</span> Which country are you
                 located in?{" "}
-                <span className="text-gray-300">
-                  {"(where your university is)"}{" "}
-                </span>
+                <span className="text-gray-300">{"(where you study)"} </span>
                 <span className="text-red-500">*</span>
               </label>
               <Select
@@ -236,51 +273,119 @@ function App() {
             </div>
           </div>
 
-          <div className="grid grid-cols-2 xl:gap-12">
-            <div className="mb-4 xl:mb-16 col-span-2 xl:col-span-1">
-              <label htmlFor="university" className={input_label}>
-                <span className={number_class}>4.</span> Which university do you
-                study at? <span className="text-red-500">*</span>
-              </label>
-              <Select
-                type="text"
-                id="university"
-                options={universityOptions}
-                onChange={handleUniversityChange}
-                value={selectedUniversity}
-                placeholder="Select a university"
-                isClearable
-                isSearchable
-                isDisabled={!selectedCountry}
-                required
-              />
-            </div>
-            <div className="mb-4 xl:mb-16 col-span-2 xl:col-span-1">
-              <label htmlFor="q5" className={input_label}>
-                <span className={number_class}>5.</span>What is your program?{" "}
+          <div className="grid grid-cols-2 xl:gap-24">
+            <div className="mb-4 xl:mb-16 col-span-2">
+              <label htmlFor="country" className={input_label}>
+                <span className={number_class}>4.</span> What level of education
+                are you currently pursuing?{" "}
                 <span className="text-red-500">*</span>
               </label>
-              <input
+              <Select
+                name="country"
                 type="text"
-                name="q5"
-                id="q5"
+                id="country"
+                className=""
+                options={education}
+                onChange={handleEducationChange}
+                value={selectedEducation}
+                placeholder="Select an option"
+                isClearable
+                isSearchable
                 required
-                className={input_class}
               />
             </div>
+          </div>
+          <div className="grid grid-cols-2 xl:gap-12">
+            {selectedEducation && selectedEducation.value === "University" && (
+              <>
+                <div className="mb-4 xl:mb-16 col-span-2 xl:col-span-1 transition-all duration-300 ease-in-out">
+                  <label htmlFor="university" className={input_label}>
+                    <span className={number_class}>5.</span> Which university do
+                    you study at? <span className="text-red-500">*</span>
+                  </label>
+                  <Select
+                    type="text"
+                    id="university"
+                    options={universityOptions}
+                    onChange={handleUniversityChange}
+                    value={selectedUniversity}
+                    placeholder={
+                      selectedCountry
+                        ? "Select a university"
+                        : "Select a country first"
+                    }
+                    isClearable
+                    isSearchable
+                    isDisabled={!selectedCountry}
+                    required
+                  />
+                </div>
+                <div className="mb-4 xl:mb-16 col-span-2 xl:col-span-1">
+                  <label htmlFor="program" className={input_label}>
+                    <span className={number_class}>6.</span>What is your
+                    program? <span className="text-red-500">*</span>
+                  </label>
+                  <Select
+                    type="text"
+                    id="program"
+                    options={universityCourseOptions}
+                    onChange={handleProgramChange}
+                    value={selectedProgram}
+                    placeholder="Select a Course, or other if not available"
+                    isClearable
+                    isSearchable
+                    required
+                  />
+                </div>
+              </>
+            )}
+            {selectedEducation && selectedEducation.value === "School" && (
+              <>
+                <div className="mb-4 xl:mb-16 col-span-2 xl:col-span-1 transition-all duration-300 ease-in-out">
+                  <label htmlFor="university" className={input_label}>
+                    <span className={number_class}>5.</span> Which school do you
+                    study at? <span className="text-red-500">*</span>
+                  </label>
+                  <input
+                    type="text"
+                    name="q5"
+                    id="q5"
+                    required
+                    className={input_class}
+                  />
+                </div>
+                <div className="mb-4 xl:mb-16 col-span-2 xl:col-span-1">
+                  <label htmlFor="program" className={input_label}>
+                    <span className={number_class}>6.</span>What is your
+                    curriculum? <span className="text-red-500">*</span>
+                  </label>
+                  <Select
+                    type="text"
+                    id="program"
+                    options={schoolCurriculumOptions}
+                    onChange={handleProgramChange}
+                    value={selectedProgram}
+                    placeholder="Select a Curriculum, or other if not available"
+                    isClearable
+                    isSearchable
+                    required
+                  />
+                </div>
+              </>
+            )}
           </div>
 
           <div className="grid grid-cols-2 gap-12">
             <div className="mb-4 xl:mb-16 col-span-2">
               <label htmlFor="q6" className={input_label}>
-                <span className={number_class}>6.</span>What industry do you
+                <span className={number_class}>7.</span>What industry do you
                 want to work in post-graduation?{" "}
                 <span className="text-red-500">*</span>
               </label>
               <input
                 type="text"
-                id="q6"
-                name="q6"
+                id="q7"
+                name="q7"
                 className={input_class}
                 required
               />
@@ -290,34 +395,11 @@ function App() {
           <div className="grid grid-cols-2 gap-12">
             <div className="mb-4 xl:mb-16 col-span-2">
               <label htmlFor="q7" className={input_label}>
-                <span className={number_class}>7.</span>Do you face issues with
+                <span className={number_class}>8.</span>Do you face issues with
                 getting internships?{" "}
                 <span className="text-gray-300">
                   (Not enough space for interns, Under qualified).
                 </span>
-                <span className="text-red-500">*</span>
-              </label>
-              <Select
-                type="text"
-                id="q7"
-                options={yes_or_no}
-                onChange={handleQ7Change}
-                value={q7Answer}
-                placeholder="Yes or No"
-                isClearable
-                required
-              />
-            </div>
-          </div>
-          <div className="grid grid-cols-2 gap-12">
-            <div className="mb-4 xl:mb-16 col-span-2">
-              <label htmlFor="q8" className={input_label}>
-                <span className={number_class}>8.</span>Do you agree with this
-                statement?{" "}
-                <span className="text-gray-300 italic">
-                  "Students are being rejected to internships due to a lack of
-                  experience"
-                </span>{" "}
                 <span className="text-red-500">*</span>
               </label>
               <Select
@@ -332,11 +414,34 @@ function App() {
               />
             </div>
           </div>
+          <div className="grid grid-cols-2 gap-12">
+            <div className="mb-4 xl:mb-16 col-span-2">
+              <label htmlFor="q8" className={input_label}>
+                <span className={number_class}>9.</span>Do you agree with this
+                statement?{" "}
+                <span className="text-gray-300 italic">
+                  "Students are being rejected to internships due to a lack of
+                  experience"
+                </span>{" "}
+                <span className="text-red-500">*</span>
+              </label>
+              <Select
+                type="text"
+                id="q9"
+                options={yes_or_no}
+                onChange={handleQ9Change}
+                value={q9Answer}
+                placeholder="Yes or No"
+                isClearable
+                required
+              />
+            </div>
+          </div>
 
           <div className="grid grid-cols-2 gap-12">
             <div className="mb-4 xl:mb-16 col-span-2">
               <label htmlFor="q9" className={input_label}>
-                <span className={number_class}>9.</span>How likely are you to
+                <span className={number_class}>10.</span>How likely are you to
                 utilize a free service that provides real world work simulations
                 partnered up with multinational institutions within your
                 preferred field?{" "}
@@ -348,10 +453,10 @@ function App() {
               </label>
               <Select
                 type="text"
-                id="q9"
-                options={q9Options}
-                onChange={handleQ9Change}
-                value={q9Answer}
+                id="q10"
+                options={q10Options}
+                onChange={handleQ10Change}
+                value={q10Answer}
                 placeholder="Select an option"
                 isClearable
                 required
@@ -361,20 +466,20 @@ function App() {
 
           <div className="grid grid-cols-2 gap-12">
             <div className="mb-4 xl:mb-16 col-span-2">
-              <label htmlFor="q10" className={input_label}>
-                <span className={number_class}>10.</span>What additional
+              <label htmlFor="q11" className={input_label}>
+                <span className={number_class}>11.</span>What additional
                 features would you find valuable in this service that can help
                 you with your career path?{" "}
                 <span className="text-red-500">*</span>
               </label>
-              <AutoResizeTextarea name="q10" />
+              <AutoResizeTextarea name="q11" />
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-12">
             <div className="mb-4 xl:mb-16 col-span-2">
               <label htmlFor="q11" className={input_label}>
-                <span className={number_class}>11.</span>How much would you pay
+                <span className={number_class}>12.</span>How much would you pay
                 for the certifications to add to your resume?
                 <br />{" "}
                 <span className="text-gray-300">
@@ -404,10 +509,12 @@ function App() {
                 </div>
                 <input
                   type="number"
-                  id="q11"
-                  name="q11"
+                  id="q12"
+                  name="q12"
                   className="block p-3 w-full z-20 ps-20 text-sm text-gray-900 bg-gray-50 rounded-lg border-e-gray-50 border-e-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
                   placeholder="Enter amount"
+                  min={0}
+                  max={200}
                   required
                 />
               </div>
@@ -417,7 +524,7 @@ function App() {
           <div className="grid grid-cols-2 gap-12">
             <div className="mb-4 xl:mb-16 col-span-2">
               <label htmlFor="q11" className={input_label}>
-                <span className={number_class}>12.</span>Would you like to get
+                <span className={number_class}>13.</span>Would you like to get
                 waitlisted for a service like this?{" "}
                 <span className="text-gray-300">
                   (You will be contacted via your provided email).
@@ -426,10 +533,10 @@ function App() {
               </label>
               <Select
                 type="text"
-                id="q12"
+                id="q13"
                 options={yes_or_no}
-                onChange={handleQ12Change}
-                value={q12Answer}
+                onChange={handleQ13Change}
+                value={q13Answer}
                 placeholder="Yes or No"
                 isClearable
                 required
@@ -437,12 +544,36 @@ function App() {
             </div>
           </div>
 
-          <button
-            type="submit"
-            className="mx-auto text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-xl text-xl w-full py-2 xl:px-32 xl:py-4 text-center"
-          >
-            Submit
-          </button>
+          {loading ? (
+            <button
+              disabled
+              className="inline-flex mx-auto text-white bg-blue-700 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-xl text-xl w-full py-2 xl:px-32 xl:py-4 text-center"
+            >
+              <svg
+                aria-hidden="true"
+                className="mx-auto w-8 h-8 text-gray-200 animate-spin dark:text-gray-50 fill-gray-600"
+                viewBox="0 0 100 101"
+                fill="none"
+                xmlns="http://www.w3.org/2000/svg"
+              >
+                <path
+                  d="M100 50.5908C100 78.2051 77.6142 100.591 50 100.591C22.3858 100.591 0 78.2051 0 50.5908C0 22.9766 22.3858 0.59082 50 0.59082C77.6142 0.59082 100 22.9766 100 50.5908ZM9.08144 50.5908C9.08144 73.1895 27.4013 91.5094 50 91.5094C72.5987 91.5094 90.9186 73.1895 90.9186 50.5908C90.9186 27.9921 72.5987 9.67226 50 9.67226C27.4013 9.67226 9.08144 27.9921 9.08144 50.5908Z"
+                  fill="currentColor"
+                />
+                <path
+                  d="M93.9676 39.0409C96.393 38.4038 97.8624 35.9116 97.0079 33.5539C95.2932 28.8227 92.871 24.3692 89.8167 20.348C85.8452 15.1192 80.8826 10.7238 75.2124 7.41289C69.5422 4.10194 63.2754 1.94025 56.7698 1.05124C51.7666 0.367541 46.6976 0.446843 41.7345 1.27873C39.2613 1.69328 37.813 4.19778 38.4501 6.62326C39.0873 9.04874 41.5694 10.4717 44.0505 10.1071C47.8511 9.54855 51.7191 9.52689 55.5402 10.0491C60.8642 10.7766 65.9928 12.5457 70.6331 15.2552C75.2735 17.9648 79.3347 21.5619 82.5849 25.841C84.9175 28.9121 86.7997 32.2913 88.1811 35.8758C89.083 38.2158 91.5421 39.6781 93.9676 39.0409Z"
+                  fill="currentFill"
+                />
+              </svg>
+            </button>
+          ) : (
+            <button
+              type="submit"
+              className="mx-auto text-white bg-blue-700 hover:bg-blue-800 focus:ring-4 focus:outline-none focus:ring-blue-300 font-medium rounded-xl text-xl w-full py-2 xl:px-32 xl:py-4 text-center"
+            >
+              Submit
+            </button>
+          )}
         </form>
       </div>
     </div>
