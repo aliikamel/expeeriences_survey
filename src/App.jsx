@@ -480,7 +480,7 @@ function App() {
             <div className="mb-4 xl:mb-16 col-span-2">
               <label htmlFor="q11" className={input_label}>
                 <span className={number_class}>12.</span>How much would you pay
-                for the certifications to add to your resume?
+                for the certifications to add to your resume?{" ($0-100)"}
                 <br />{" "}
                 <span className="text-gray-300">
                   (note: Certifications are acquired after the free simulation
@@ -514,7 +514,7 @@ function App() {
                   className="block p-3 w-full z-20 ps-20 text-sm text-gray-900 bg-gray-50 rounded-lg border-e-gray-50 border-e-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
                   placeholder="Enter amount"
                   min={0}
-                  max={200}
+                  max={100}
                   required
                 />
               </div>
