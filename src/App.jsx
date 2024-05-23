@@ -6,7 +6,7 @@ import AutoResizeTextarea from "./AutoResizeText";
 
 function App() {
   const results_url =
-    "https://script.google.com/macros/s/AKfycbxiLDeg5N3nSsyyLPaqWoLZQW7jdFGaA1Pmj774713mgydxOQaesB7AfO0FFGBE68zd5g/exec";
+    "https://script.google.com/macros/s/AKfycbw32AdREjE5lPz11ozW-nEkGYHXGp5b2DTfixnfaTsUQySW4_K9y_1uWTMvBzNT2J3iHQ/exec";
 
   // CSS CLASS NAMES
   const number_class = "text-base text-gray-500 mr-2 font-bold";
@@ -18,18 +18,19 @@ function App() {
   const [selectedCountry, setSelectedCountry] = useState(null);
   const [selectedUniversity, setSelectedUniversity] = useState(null);
   const [selectedProgram, setSelectedProgram] = useState(null);
+  const [selectedLocationToWork, setSelectedLocationToWork] = useState(null);
   const [loading, setLoading] = useState(false);
   // State to store the selected answer for the internship issue
-  const [q8Answer, setQ8Answer] = useState(null);
   const [q9Answer, setQ9Answer] = useState(null);
   const [q10Answer, setQ10Answer] = useState(null);
-  const [q13Answer, setQ13Answer] = useState(null);
+  const [q11Answer, setQ11Answer] = useState(null);
+  const [q14Answer, setQ14Answer] = useState(null);
 
   let survey_submitted = localStorage.getItem("completedSurvey") || false;
 
   const [completedSurvey, setCompletedSurvey] = useState(survey_submitted);
   const [completedSurveyError, setCompletedSurveyError] = useState(null);
-
+  console.log(Object.keys(universitiesData).length);
   const countryOptions = Object.keys(universitiesData)
     .sort()
     .map((key) => ({
@@ -37,6 +38,15 @@ function App() {
       label: key,
     }))
     .sort();
+
+  let locationToWorkOptions = Object.keys(universitiesData)
+    .sort()
+    .map((key) => ({
+      value: key,
+      label: key,
+    }));
+
+  locationToWorkOptions.unshift({ value: "Remote", label: "Remote" });
 
   let universities_list = selectedCountry
     ? universitiesData[selectedCountry.value].sort()
@@ -74,7 +84,7 @@ function App() {
     { value: "School", label: "School" },
   ];
 
-  const q10Options = [
+  const q11Options = [
     { value: "Very likely", label: "Very likely" },
     { value: "Somewhat likely", label: "Somewhat likely" },
     {
@@ -104,11 +114,11 @@ function App() {
     setSelectedProgram(selectedOption);
   };
 
-  // Handle change for the yes/no question
-  const handleQ8Change = (selectedOption) => {
-    setQ8Answer(selectedOption);
+  const handleLocationToWorkChange = (selectedOption) => {
+    setSelectedLocationToWork(selectedOption);
   };
 
+  // Handle change for the yes/no question
   const handleQ9Change = (selectedOption) => {
     setQ9Answer(selectedOption);
   };
@@ -117,8 +127,12 @@ function App() {
     setQ10Answer(selectedOption);
   };
 
-  const handleQ13Change = (selectedOption) => {
-    setQ13Answer(selectedOption);
+  const handleQ11Change = (selectedOption) => {
+    setQ11Answer(selectedOption);
+  };
+
+  const handleQ14Change = (selectedOption) => {
+    setQ14Answer(selectedOption);
   };
 
   const handleSubmit = async (e) => {
@@ -140,12 +154,13 @@ function App() {
       educational_institute: educational_institute,
       program: selectedProgram.value,
       industry: data.q7.value,
-      Question_8: q8Answer.value,
+      location: selectedLocationToWork.value,
       Question_9: q9Answer.value,
       Question_10: q10Answer.value,
-      Question_11: data.q11.value,
+      Question_11: q11Answer.value,
       Question_12: data.q12.value,
-      Question_13: q13Answer.value,
+      Question_13: data.q13.value,
+      Question_14: q14Answer.value,
     };
 
     console.log(formattedSurveyData);
@@ -392,37 +407,32 @@ function App() {
             </div>
           </div>
 
+          <div className="mb-4 xl:mb-16 col-span-2 xl:col-span-1">
+            <label htmlFor="location" className={input_label}>
+              <span className={number_class}>8.</span>Where do you want to
+              pursue a career? <span className="text-red-500">*</span>
+            </label>
+            <Select
+              type="text"
+              id="location"
+              options={locationToWorkOptions}
+              onChange={handleLocationToWorkChange}
+              value={selectedLocationToWork}
+              placeholder="Select a Country, or Remote"
+              isClearable
+              isSearchable
+              required
+            />
+          </div>
+
           <div className="grid grid-cols-2 gap-12">
             <div className="mb-4 xl:mb-16 col-span-2">
-              <label htmlFor="q7" className={input_label}>
-                <span className={number_class}>8.</span>Do you face issues with
+              <label htmlFor="q9" className={input_label}>
+                <span className={number_class}>9.</span>Do you face issues with
                 getting internships?{" "}
                 <span className="text-gray-300">
                   (Not enough space for interns, Under qualified).
                 </span>
-                <span className="text-red-500">*</span>
-              </label>
-              <Select
-                type="text"
-                id="q8"
-                options={yes_or_no}
-                onChange={handleQ8Change}
-                value={q8Answer}
-                placeholder="Yes or No"
-                isClearable
-                required
-              />
-            </div>
-          </div>
-          <div className="grid grid-cols-2 gap-12">
-            <div className="mb-4 xl:mb-16 col-span-2">
-              <label htmlFor="q8" className={input_label}>
-                <span className={number_class}>9.</span>Do you agree with this
-                statement?{" "}
-                <span className="text-gray-300 italic">
-                  "Students are being rejected to internships due to a lack of
-                  experience"
-                </span>{" "}
                 <span className="text-red-500">*</span>
               </label>
               <Select
@@ -437,11 +447,34 @@ function App() {
               />
             </div>
           </div>
+          <div className="grid grid-cols-2 gap-12">
+            <div className="mb-4 xl:mb-16 col-span-2">
+              <label htmlFor="q10" className={input_label}>
+                <span className={number_class}>10.</span>Do you agree with this
+                statement?{" "}
+                <span className="text-gray-300 italic">
+                  "Students are being rejected to internships due to a lack of
+                  experience"
+                </span>{" "}
+                <span className="text-red-500">*</span>
+              </label>
+              <Select
+                type="text"
+                id="q10"
+                options={yes_or_no}
+                onChange={handleQ10Change}
+                value={q10Answer}
+                placeholder="Yes or No"
+                isClearable
+                required
+              />
+            </div>
+          </div>
 
           <div className="grid grid-cols-2 gap-12">
             <div className="mb-4 xl:mb-16 col-span-2">
-              <label htmlFor="q9" className={input_label}>
-                <span className={number_class}>10.</span>How likely are you to
+              <label htmlFor="q11" className={input_label}>
+                <span className={number_class}>11.</span>How likely are you to
                 utilize a free service that provides real world work simulations
                 partnered up with multinational institutions within your
                 preferred field?{" "}
@@ -453,10 +486,10 @@ function App() {
               </label>
               <Select
                 type="text"
-                id="q10"
-                options={q10Options}
-                onChange={handleQ10Change}
-                value={q10Answer}
+                id="q11"
+                options={q11Options}
+                onChange={handleQ11Change}
+                value={q11Answer}
                 placeholder="Select an option"
                 isClearable
                 required
@@ -466,20 +499,20 @@ function App() {
 
           <div className="grid grid-cols-2 gap-12">
             <div className="mb-4 xl:mb-16 col-span-2">
-              <label htmlFor="q11" className={input_label}>
-                <span className={number_class}>11.</span>What additional
+              <label htmlFor="q12" className={input_label}>
+                <span className={number_class}>12.</span>What additional
                 features would you find valuable in this service that can help
                 you with your career path?{" "}
                 <span className="text-red-500">*</span>
               </label>
-              <AutoResizeTextarea name="q11" />
+              <AutoResizeTextarea name="q12" />
             </div>
           </div>
 
           <div className="grid grid-cols-2 gap-12">
             <div className="mb-4 xl:mb-16 col-span-2">
-              <label htmlFor="q11" className={input_label}>
-                <span className={number_class}>12.</span>How much would you pay
+              <label htmlFor="q13" className={input_label}>
+                <span className={number_class}>13.</span>How much would you pay
                 for the certifications to add to your resume?{" ($0-100)"}
                 <br />{" "}
                 <span className="text-gray-300">
@@ -509,8 +542,8 @@ function App() {
                 </div>
                 <input
                   type="number"
-                  id="q12"
-                  name="q12"
+                  id="q13"
+                  name="q13"
                   className="block p-3 w-full z-20 ps-20 text-sm text-gray-900 bg-gray-50 rounded-lg border-e-gray-50 border-e-2 border border-gray-300 focus:ring-blue-500 focus:border-blue-500"
                   placeholder="Enter amount"
                   min={0}
@@ -524,7 +557,7 @@ function App() {
           <div className="grid grid-cols-2 gap-12">
             <div className="mb-4 xl:mb-16 col-span-2">
               <label htmlFor="q11" className={input_label}>
-                <span className={number_class}>13.</span>Would you like to get
+                <span className={number_class}>14.</span>Would you like to get
                 waitlisted for a service like this?{" "}
                 <span className="text-gray-300">
                   (You will be contacted via your provided email).
@@ -533,10 +566,10 @@ function App() {
               </label>
               <Select
                 type="text"
-                id="q13"
+                id="q14"
                 options={yes_or_no}
-                onChange={handleQ13Change}
-                value={q13Answer}
+                onChange={handleQ14Change}
+                value={q14Answer}
                 placeholder="Yes or No"
                 isClearable
                 required
